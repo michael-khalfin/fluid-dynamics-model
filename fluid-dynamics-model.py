@@ -127,6 +127,28 @@ def addMotors(area,v,x,y_arr,v_arr):
     t = np.sum(t_arr)
     return t
 
+def addMotorsVel(area,v,x,y_arr,v_arr):
+    """
+    Parameters:
+    area = area of nanomotors to generate v
+    v = speed of nanomotors
+    x = new area being tested
+    y_arr = height values
+    v_arr = blood velocity values
+    
+    Returns:
+    v_arteries = Average velocities in all 6 arteries
+    """
+    # relative velocity problem
+    v_rel = v_arr.copy()
+    for i in range(0, len(v_rel)-2):
+        v_rel[i] += (v/area)*x
+    
+    v_arteries = np.zeros(len(v_rel))
+    for i in range(0, len(v_rel)):
+        v_arteries[i] = np.mean(v_rel[i])
+    return v_arteries
+
 def addSpeeds(area,v,y_arr,v_arr):
     """
     Parameters:
@@ -159,6 +181,7 @@ if __name__ == "__main__":
     mu_val = 4.5
     rho_val = 1060
     g_val = -9.81
+    P_vals = np.array([100,120,130,140,60,50,60])
     P_vals = np.array([90.7,92.3,94,96,98,96,94])
     P_vals = 133322.39 * P_vals
     y0_vals = np.array([218.1,101.3,101.5,78,38.8,52])
@@ -174,9 +197,15 @@ if __name__ == "__main__":
     y_vals = findHeights(y0_vals, precision_val)
     v_vals = generateVel(P_vals, diam_vals, mu_val, y0_vals, precision_val,rho_val,g_val,y_vals)
     
+    # finding average blood velocities
+    blood_vel = np.zeros(len(diam_vals))
+    for i in range(0, len(blood_vel)):
+        blood_vel[i] = np.mean(v_vals[i])
+    
     # A : testing amount of nanomotors
     
     # figuring out initial amount of mm for forward flow at all times
+
     motor_min = .1
     time = 0
     while time <= 0:
@@ -192,15 +221,10 @@ if __name__ == "__main__":
     for i in range(0, len(motor_amt)):
         test_times[i] = addMotors(motor_area, motor_speed, motor_amt[i], y_vals, v_vals)
     test_times = np.round(test_times, 2)
-    print(test_times)
     
-    # plot test times
-    fig = plt.figure(figsize=(8,8))
-    ax1 = fig.add_subplot(2,1,1)
-    ax1.set_xlabel('Amount of Nanomotors (mm)')
-    ax1.set_ylabel('Total Time (s)')
-    ax1.set_title('Effect of Varying Amount of Nanomotors on Total Time')
-    ax1.scatter(motor_amt,test_times)
+    # mean NP velocities in all 6 arteries
+    np_vel = np.zeros(len(diam_vals))
+    np_vel = addMotorsVel(motor_area, motor_speed, motor_amt[0], y_vals, v_vals)
     
     # statistical analysis
     stat, p = ttest_1samp(test_times[1:],test_times[0])
@@ -225,16 +249,18 @@ if __name__ == "__main__":
     speed_vals = np.ceil(speed_vals)
     
     # test nanomotors
-    test_times = np.zeros(len(speed_vals))
+    test_times2 = np.zeros(len(speed_vals))
     for i in range(0, len(speed_vals)):
-        test_times[i] = addSpeeds(motor_area, speed_vals[i], y_vals, v_vals)
-    test_times = np.round(test_times, 2)
-    print(test_times)
+        test_times2[i] = addSpeeds(motor_area, speed_vals[i], y_vals, v_vals)
+    test_times2 = np.round(test_times, 2)
     
     # plot test times
-    fig = plt.figure(figsize=(8,8))
+    fig = plt.figure(figsize=(10,10))
     ax1 = fig.add_subplot(2,1,1)
-    ax1.set_xlabel('Speed of Nanomotors (cm/s)')
+    ax2 = fig.add_subplot(2,1,2)
+    ax1.set_xlabel('Amount of Nanomotors (mm)')
     ax1.set_ylabel('Total Time (s)')
-    ax1.set_title('Effect of Varying Speed of Nanomotors on Total Time')
+    ax2.set_xlabel('Speed of Nanomotors (cm/s)')
+    ax2.set_ylabel('Total Time (s)')
     ax1.scatter(motor_amt,test_times)
+    ax2.scatter(motor_amt,test_times)
