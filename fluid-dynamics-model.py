@@ -124,6 +124,8 @@ def addMotors(area,v,x,y_arr,v_arr):
             if v_rel[i][j] <= 0:
                 return 0
             t_arr[i] += (y_arr[i][j+1] - y_arr[i][j]) / v_rel[i][j]
+    if x == 15:
+        print(t_arr)
     t = np.sum(t_arr)
     return t
 
@@ -181,7 +183,6 @@ if __name__ == "__main__":
     mu_val = 4.5
     rho_val = 1060
     g_val = -9.81
-    P_vals = np.array([100,120,130,140,60,50,60])
     P_vals = np.array([90.7,92.3,94,96,98,96,94])
     P_vals = 133322.39 * P_vals
     y0_vals = np.array([218.1,101.3,101.5,78,38.8,52])
