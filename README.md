@@ -1,6 +1,6 @@
 <br/>
 <div align="center">
-  <h2 align="center">Hemodynamics Model Illustrating Subcutaneous Delivery of Anti-Tau Nanoparticle For Prodromal Alzheimer’s Disease Intervention</h2>
+  <h2 align="center">Hemodynamics Model Illustrating Transradial Delivery of Anti-Tau Nanoparticle For Prodromal Alzheimer’s Disease Intervention</h2>
   <h3 align="left">By Michael Khalfin</h3>
   <p align="left">
     <a href="https://michael-khalfin.github.io/michael-khalfin-cv/">Curriculum Vitae</a>
